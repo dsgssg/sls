@@ -14,22 +14,14 @@
             -webkit-user-select: none;
             user-select: none;
         }
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
-        }
         @keyframes fall {
             0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 1; }
         }
         .falling {
             position: absolute;
-            animation: fall 4s linear infinite;
+            animation: fall 4s linear;
             font-size: 2rem;
-        }
-        .floating {
-            animation: float 3s ease-in-out infinite;
         }
         .control-button {
             background: rgba(255, 255, 255, 0.3);
@@ -41,13 +33,13 @@
 </head>
 <body class="h-screen overflow-hidden">
     <div id="game-container" class="relative h-screen bg-gradient-to-r from-purple-200 via-pink-300 to-blue-400">
-        <div class="absolute top-4 left-1/2 transform -translate-x-1/2 text-2xl font-bold text-teal-600 z-50 bg-white/30 backdrop-blur-sm rounded-full px-6 py-2 shadow-lg">
+        <div class="absolute top-16 left-1/2 transform -translate-x-1/2 text-2xl font-bold text-teal-600 z-50 bg-white/30 backdrop-blur-sm rounded-full px-6 py-2 shadow-lg">
             Score: <span id="score" class="text-yellow-500">0</span>
         </div>
 
         <div id="falling-kisses"></div>
 
-        <div class="absolute top-4 right-4 z-50">
+        <div class="absolute top-4 left-4 z-50">
             <select id="theme-selector" class="px-4 py-2 rounded-full bg-white/40 backdrop-blur-sm text-teal-600 text-lg cursor-pointer hover:bg-white/60 transition-all">
                 <option value="romantic">🌸 Bum Bum Pink</option>
                 <option value="sunset">🌅 Lovey Sunset</option>
@@ -55,13 +47,8 @@
             </select>
         </div>
 
-        <div class="md:hidden fixed bottom-32 left-0 right-0 flex justify-center gap-8 z-50">
-            <button id="left-btn" class="control-button w-16 h-16 rounded-full text-3xl flex items-center justify-center">←</button>
-            <button id="right-btn" class="control-button w-16 h-16 rounded-full text-3xl flex items-center justify-center">→</button>
-        </div>
-
         <div id="player" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-16 h-16 z-40">
-            <img src="./Game.gif" alt="Bum Bum Bear" class="w-full h-full object-contain floating">
+            <img src="./Game.gif" alt="Bum Bum Bear" class="w-full h-full object-contain">
         </div>
     </div>
 
@@ -69,30 +56,7 @@
         const player = document.getElementById('player');
         const scoreElement = document.getElementById('score');
         const fallingKissesContainer = document.getElementById('falling-kisses');
-        const leftBtn = document.getElementById('left-btn');
-        const rightBtn = document.getElementById('right-btn');
         let score = 0;
-        let playerPosition = window.innerWidth / 2;
-        let isMovingLeft = false;
-        let isMovingRight = false;
-
-        leftBtn.addEventListener('touchstart', () => isMovingLeft = true);
-        leftBtn.addEventListener('touchend', () => isMovingLeft = false);
-        rightBtn.addEventListener('touchstart', () => isMovingRight = true);
-        rightBtn.addEventListener('touchend', () => isMovingRight = false);
-
-        function updatePlayerPosition() {
-            const speed = 10;
-            if (isMovingLeft && playerPosition > 0) {
-                playerPosition = Math.max(0, playerPosition - speed);
-            }
-            if (isMovingRight && playerPosition < window.innerWidth - player.offsetWidth) {
-                playerPosition = Math.min(window.innerWidth - player.offsetWidth, playerPosition + speed);
-            }
-            player.style.left = `${playerPosition}px`;
-            requestAnimationFrame(updatePlayerPosition);
-        }
-        requestAnimationFrame(updatePlayerPosition);
 
         function createFallingKiss() {
             const kiss = document.createElement('div');
@@ -100,7 +64,26 @@
             kiss.className = 'falling';
             kiss.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
             fallingKissesContainer.appendChild(kiss);
-            setTimeout(() => kiss.remove(), 4000);
+            
+            const checkCollision = setInterval(() => {
+                const kissRect = kiss.getBoundingClientRect();
+                const playerRect = player.getBoundingClientRect();
+
+                if (kissRect.bottom >= playerRect.top &&
+                    kissRect.top <= playerRect.bottom &&
+                    kissRect.right >= playerRect.left &&
+                    kissRect.left <= playerRect.right) {
+                    clearInterval(checkCollision);
+                    kiss.remove();
+                    score++;
+                    scoreElement.textContent = score;
+                }
+            }, 50);
+
+            setTimeout(() => {
+                clearInterval(checkCollision);
+                kiss.remove();
+            }, 4000);
         }
 
         setInterval(createFallingKiss, 1000);
