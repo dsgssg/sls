@@ -47,6 +47,11 @@
             </select>
         </div>
 
+        <div class="fixed bottom-16 left-0 right-0 flex justify-center gap-8 z-50">
+            <button id="left-btn" class="control-button w-16 h-16 rounded-full text-3xl flex items-center justify-center">←</button>
+            <button id="right-btn" class="control-button w-16 h-16 rounded-full text-3xl flex items-center justify-center">→</button>
+        </div>
+
         <div id="player" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-16 h-16 z-40">
             <img src="./Game.gif" alt="Bum Bum Bear" class="w-full h-full object-contain">
         </div>
@@ -56,37 +61,30 @@
         const player = document.getElementById('player');
         const scoreElement = document.getElementById('score');
         const fallingKissesContainer = document.getElementById('falling-kisses');
+        const leftBtn = document.getElementById('left-btn');
+        const rightBtn = document.getElementById('right-btn');
         let score = 0;
+        let playerPosition = window.innerWidth / 2;
+        let isMovingLeft = false;
+        let isMovingRight = false;
 
-        function createFallingKiss() {
-            const kiss = document.createElement('div');
-            kiss.innerHTML = '💋';
-            kiss.className = 'falling';
-            kiss.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
-            fallingKissesContainer.appendChild(kiss);
-            
-            const checkCollision = setInterval(() => {
-                const kissRect = kiss.getBoundingClientRect();
-                const playerRect = player.getBoundingClientRect();
+        leftBtn.addEventListener('touchstart', () => isMovingLeft = true);
+        leftBtn.addEventListener('touchend', () => isMovingLeft = false);
+        rightBtn.addEventListener('touchstart', () => isMovingRight = true);
+        rightBtn.addEventListener('touchend', () => isMovingRight = false);
 
-                if (kissRect.bottom >= playerRect.top &&
-                    kissRect.top <= playerRect.bottom &&
-                    kissRect.right >= playerRect.left &&
-                    kissRect.left <= playerRect.right) {
-                    clearInterval(checkCollision);
-                    kiss.remove();
-                    score++;
-                    scoreElement.textContent = score;
-                }
-            }, 50);
-
-            setTimeout(() => {
-                clearInterval(checkCollision);
-                kiss.remove();
-            }, 4000);
+        function updatePlayerPosition() {
+            const speed = 10;
+            if (isMovingLeft && playerPosition > 0) {
+                playerPosition = Math.max(0, playerPosition - speed);
+            }
+            if (isMovingRight && playerPosition < window.innerWidth - player.offsetWidth) {
+                playerPosition = Math.min(window.innerWidth - player.offsetWidth, playerPosition + speed);
+            }
+            player.style.left = `${playerPosition}px`;
+            requestAnimationFrame(updatePlayerPosition);
         }
-
-        setInterval(createFallingKiss, 1000);
+        requestAnimationFrame(updatePlayerPosition);
     </script>
 </body>
 </html>
