@@ -100,7 +100,26 @@
             kiss.className = 'falling';
             kiss.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
             fallingKissesContainer.appendChild(kiss);
-            setTimeout(() => kiss.remove(), 4000);
+            
+            const checkCollision = setInterval(() => {
+                const kissRect = kiss.getBoundingClientRect();
+                const playerRect = player.getBoundingClientRect();
+
+                if (kissRect.bottom >= playerRect.top &&
+                    kissRect.top <= playerRect.bottom &&
+                    kissRect.right >= playerRect.left &&
+                    kissRect.left <= playerRect.right) {
+                    clearInterval(checkCollision);
+                    kiss.remove();
+                    score++;
+                    scoreElement.textContent = score;
+                }
+            }, 50);
+
+            setTimeout(() => {
+                clearInterval(checkCollision);
+                kiss.remove();
+            }, 4000);
         }
 
         setInterval(createFallingKiss, 1000);
