@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Kiss Day By Sourav 💋</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(145deg, #ff9a9e, #fad0c4, #ffd1ff);
+            font-family: 'Pacifico', sans-serif;
+            overflow: hidden;
+            position: relative;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3rem;
+            color: #ff69b4;
+        }
+        .kiss-button, .play-button {
+            font-size: 1.5rem;
+            padding: 15px 20px;
+            margin: 10px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(45deg, #ff6ec7, #ff9e2c);
+            color: white;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+        }
+        .kiss-counter {
+            font-size: 2rem;
+            color: #ff69b4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Happy Kiss Day, Madam Ji! 💋</h1>
+    <p>Total Kisses Sent: <span id="kiss-counter" class="kiss-counter">00001</span></p>
+    <button id="kiss-button" class="kiss-button">Tap for a Surprise Kiss! 💋</button>
+    <button id="play-button" class="play-button">Let's Play a Game! 💋</button>
+
+    <script>
+        let counter = document.getElementById('kiss-counter');
+        document.getElementById('kiss-button').addEventListener('click', () => {
+            counter.textContent = String(parseInt(counter.textContent) + 1).padStart(5, '0');
+        });
+        document.getElementById('play-button').addEventListener('click', () => {
+            window.location.href = 'game.html';
+        });
+    </script>
+</body>
+</html>

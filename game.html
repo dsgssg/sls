@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kiss Game By Sourav 💝</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style>
+        * {
+            font-family: 'Bubblegum Sans', cursive;
+            touch-action: manipulation;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        .control-button {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(4px);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+<body class="h-screen overflow-hidden">
+    <div id="game-container" class="relative h-screen bg-gradient-to-r from-purple-200 via-pink-300 to-blue-400">
+        <div class="absolute top-4 left-1/2 transform -translate-x-1/2 text-2xl font-bold text-teal-600 z-50 bg-white/30 backdrop-blur-sm rounded-full px-6 py-2 shadow-lg">
+            Score: <span id="score" class="text-yellow-500">0</span>
+        </div>
+
+        <div class="absolute top-4 right-4 z-50">
+            <select id="theme-selector" class="px-4 py-2 rounded-full bg-white/40 backdrop-blur-sm text-teal-600 text-lg cursor-pointer hover:bg-white/60 transition-all">
+                <option value="romantic">🌸 Bum Bum Pink</option>
+                <option value="sunset">🌅 Lovey Sunset</option>
+                <option value="dreamy">✨ Dreamy Vibes</option>
+            </select>
+        </div>
+
+        <div class="md:hidden fixed bottom-32 left-0 right-0 flex justify-center gap-8 z-50">
+            <button id="left-btn" class="control-button w-16 h-16 rounded-full text-3xl flex items-center justify-center">←</button>
+            <button id="right-btn" class="control-button w-16 h-16 rounded-full text-3xl flex items-center justify-center">→</button>
+        </div>
+
+        <div id="player" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-16 h-16 z-40">
+            <img src="./Game.gif" alt="Bum Bum Bear" class="w-full h-full object-contain floating">
+        </div>
+    </div>
+
+    <script>
+        const player = document.getElementById('player');
+        const scoreElement = document.getElementById('score');
+        const leftBtn = document.getElementById('left-btn');
+        const rightBtn = document.getElementById('right-btn');
+        let score = 0;
+        let playerPosition = window.innerWidth / 2;
+        let isMovingLeft = false;
+        let isMovingRight = false;
+
+        const loveMessages = [
+            "Bum Bum loves you! 💝",
+            "You're my sweetie pie! 🍯",
+            "Forever my cutie! 🌸",
+            "Bum Bum's heart goes boom! 💗",
+            "You're pawfect! 🐻",
+            "Cuddle time! 🤗",
+            "My sweet muffin! 🧁"
+        ];
+
+        leftBtn.addEventListener('touchstart', () => isMovingLeft = true);
+        leftBtn.addEventListener('touchend', () => isMovingLeft = false);
+        rightBtn.addEventListener('touchstart', () => isMovingRight = true);
+        rightBtn.addEventListener('touchend', () => isMovingRight = false);
+
+        function updatePlayerPosition() {
+            const speed = 10;
+            if (isMovingLeft && playerPosition > 0) {
+                playerPosition = Math.max(0, playerPosition - speed);
+            }
+            if (isMovingRight && playerPosition < window.innerWidth - player.offsetWidth) {
+                playerPosition = Math.min(window.innerWidth - player.offsetWidth, playerPosition + speed);
+            }
+            player.style.left = `${playerPosition}px`;
+            requestAnimationFrame(updatePlayerPosition);
+        }
+        requestAnimationFrame(updatePlayerPosition);
+    </script>
+</body>
+</html>
